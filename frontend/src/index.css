@@ -1,0 +1,46 @@
+@import "tailwindcss";
+
+main {
+  background-color: #020617;
+}
+
+/* The Vertical Connecting Line - Updated to Emerald */
+.section-connector {
+  position: relative;
+}
+
+.section-connector::before {
+  content: '';
+  position: absolute;
+  left: 50%; /* Center of the page */
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    rgba(16, 185, 129, 0.2) 10%, /* Emerald-500 at 20% opacity */
+    rgba(16, 185, 129, 0.2) 90%,
+    transparent
+  );
+  z-index: -1;
+}
+
+/* Updated Dot: Emerald-500 with a matching glow */
+.section-dot {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  transform: translate(-50%, -50%);
+  width: 8px;
+  height: 8px;
+  background: #10b981; /* Emerald-500 */
+  border-radius: 50%;
+  box-shadow: 0 0 12px #10b981;
+}
+
+/* Add this to ensure your selection color matches the new theme */
+::selection {
+  background-color: rgba(16, 185, 129, 0.3);
+  color: #ecfdf5;
+}

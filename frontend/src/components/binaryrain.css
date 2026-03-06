@@ -1,0 +1,13 @@
+.animate-binary-fall {
+  animation: binary-fall linear infinite;
+  /* Force the browser to render text as sharp pixels */
+  -webkit-font-smoothing: none;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeSpeed;
+  will-change: transform;
+}
+
+@keyframes binary-fall {
+  0% { transform: translateY(-50%) translateZ(0); }
+  100% { transform: translateY(50%) translateZ(0); }
+}
