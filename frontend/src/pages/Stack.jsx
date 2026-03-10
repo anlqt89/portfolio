@@ -1,11 +1,21 @@
-import { Layers, Database, Globe, Terminal } from "lucide-react";
-import { MyStackData } from "../data/MyStackData";
+import { useState, useEffect } from "react";
+import { Database, Globe, Terminal } from "lucide-react";
 import { StackLevel } from "../data/StackData";
 import { useFavicon } from "../components/SetFavicon";
 import { FAVICON_TITLES } from "../data/FaviconTitles";
+import { API } from "../utilities/api";
 
 export default function Stack() {
 useFavicon(`${FAVICON_TITLES.PORTFOLIO} | ${FAVICON_TITLES.STACK}`);
+  const [skills, setSkills] = useState([]);
+
+  useEffect(() => {
+    async function loadSkills() {
+      const res = await fetch(API.skills)
+      setSkills(await res.json())
+    }
+    loadSkills()
+  }, [])
   return (
     <div className="bg-[#020617] min-h-screen text-white py-20 px-6">
       <div className="max-w-6xl mx-auto">
@@ -21,7 +31,7 @@ useFavicon(`${FAVICON_TITLES.PORTFOLIO} | ${FAVICON_TITLES.STACK}`);
 
         {/* Stack Grid */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {MyStackData.map((group, idx) => (
+          {skills.map((group, idx) => (
             <div key={idx} className="bg-slate-900/40 border border-slate-800/50 p-8 rounded-3xl hover:border-emerald-500/30 hover:bg-slate-900/60 transition-all duration-500 group/card">
               <div className="flex items-center gap-3 mb-8">
                 {/* Icon wrapper changed to emerald */}

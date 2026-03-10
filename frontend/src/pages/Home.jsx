@@ -1,22 +1,34 @@
 import Hero from "../components/Hero";
-import resume from "../assets/resume/resume-anlam.pdf"
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./home.css"
 import { useFavicon } from "../components/SetFavicon";
 import { FAVICON_TITLES } from "../data/FaviconTitles";
+import { API } from "../utilities/api";
 
 export default function Home() {
      useFavicon(`${FAVICON_TITLES.PORTFOLIO} | ${FAVICON_TITLES.HOME}`);
     const navigate = useNavigate();
     const [isHovered, setIsHovered] = useState(false);
+    const [contact, setContact] = useState(null);
+    const [education, setEducation] = useState([]);
+
+    useEffect(() => {
+      async function loadData() {
+        const [contactRes, educationRes] = await Promise.all([
+          fetch(API.contact),
+          fetch(API.education),
+        ])
+        setContact(await contactRes.json())
+        setEducation(await educationRes.json())
+      }
+      loadData()
+    }, [])
 
     const handleDownload = () => {
-        const fileUrl = resume; 
-        const fileName = "resume-anlam.pdf";
         const link = document.createElement('a');
-        link.href = fileUrl;
-        link.setAttribute('download', fileName);
+        link.href = API.resumeDownload;
+        link.setAttribute('download', 'resume-anlam.pdf');
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
@@ -34,7 +46,7 @@ export default function Home() {
           
          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6">
     <div className="inline-block px-4 py-1.5 bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 rounded-lg text-base font-bold tracking-wider shadow-[0_0_15px_rgba(16,185,129,0.1)]">
-      <span>Hi! I'm </span> <span className="text-white">An Lam</span>
+      <span>Hi! I'm </span> <span className="text-white">{contact?.name}</span>
     </div>
 
     <div className={`flex items-center gap-3 px-4 py-1.5 rounded-lg border transition-all duration-300 ${
@@ -48,14 +60,14 @@ export default function Home() {
                                     {isHovered ? (
                                         <span className="typing-container inline-block">Ready to Build</span>
                                     ) : (
-                                        <span className="opacity-80">Open to Work</span>
+                                        <span className="opacity-80">{contact?.status}</span>
                                     )}
                                 </span>
                         </div>
                     </div>
           
           <h1 className="text-3xl lg:text-4xl font-black leading-[1] tracking-tighter">
-          Full-Stack Developer. <br/>
+          {contact?.title} <br/>
           <span className="text-emerald-500 drop-shadow-[0_0_8px_rgba(16,185,129,0.25)]">
            
           </span>
@@ -64,16 +76,17 @@ export default function Home() {
           <div className="space-y-4">
             <p className="mt-4 text-lg text-gray-300">
               Software Engineer pursuing an 
-              <span className="text-emerald-400 font-bold"> MS in Computer Science at UT Arlington</span>, 
-              focused on building scalable systems, high-performance data architectures, 
-              and intelligent applications powered by modern AI.
+              <span className="text-emerald-400 font-bold"> 
+                MS in Computer Science at UT Arlington
+              </span>, 
+              {contact?.goal}
             </p>
           </div>
 
           {/* Academic & Tech Stats Bar */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 py-6 border-y border-slate-800/50">
             <div>
-              <p className="text-emerald-500 font-black text-xl">4.0</p>
+              <p className="text-emerald-500 font-black text-xl">{education[0]?.gpa ?? '4.0'}</p>
               <p className="text-[10px] uppercase tracking-widest text-slate-500 font-bold">GPA @ UTA</p>
             </div>
             <div>

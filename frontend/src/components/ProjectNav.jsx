@@ -1,8 +1,8 @@
-export const ProjectNav = ({ ProjectsData, activeIndex, scrollToProject }) => {
+export const ProjectNav = ({ projects, activeIndex, scrollToProject }) => {
   return (
     <aside className="hidden lg:block border-l border-slate-800/50 pl-8">
       <nav className="sticky top-40 flex flex-col gap-10">
-        {ProjectsData.map((project, index) => (
+        {projects.map((project, index) => (
           <button
             key={project.id}
             onClick={() => scrollToProject(index)}

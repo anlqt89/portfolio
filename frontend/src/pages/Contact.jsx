@@ -3,10 +3,10 @@ import { useFavicon } from "../components/SetFavicon";
 import Github from 'lucide-react/dist/esm/icons/github';
 import Linkedin from 'lucide-react/dist/esm/icons/linkedin';
 import Mail from 'lucide-react/dist/esm/icons/mail';
-import { MyContact } from "../data/MyContact";
 import { FAVICON_TITLES } from "../data/FaviconTitles";
+import { API } from "../utilities/api";
 import emailjs from '@emailjs/browser';
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 
 export default function Contact() {
   useFavicon(`${FAVICON_TITLES.PORTFOLIO} | ${FAVICON_TITLES.CONTACT}`);
@@ -14,6 +14,15 @@ export default function Contact() {
   const form = useRef();
   const [isSending, setIsSending] = useState(false);
   const [status, setStatus] = useState("");
+  const [contact, setContact] = useState(null);
+
+  useEffect(() => {
+    async function loadContact() {
+      const res = await fetch(API.contact)
+      setContact(await res.json())
+    }
+    loadContact()
+  }, [])
 
 
 
@@ -66,21 +75,21 @@ export default function Contact() {
           </div>
 
           <div className="space-y-4">
-            <a href={`mailto:${MyContact.email}`} className="flex items-center gap-4 group w-fit">
+            <a href={`mailto:${contact?.email}`} className="flex items-center gap-4 group w-fit">
               <div className="p-3 bg-slate-900 border border-slate-800 group-hover:border-emerald-500/50 transition-colors rounded-lg">
                 <Mail className="text-emerald-400" size={20} />
               </div>
               <div>
                 <p className="text-xs text-slate-500 uppercase font-bold tracking-widest">Email Me</p>
-                <p className="text-slate-200 group-hover:text-emerald-400 transition-colors">{MyContact.email}</p>
+                <p className="text-slate-200 group-hover:text-emerald-400 transition-colors">{contact?.email}</p>
               </div>
             </a>
 
             <div className="flex gap-4 pt-4">
-              <a href={`https://www.linkedin.com/in/${MyContact.linkedin}`} className="p-4 bg-slate-900 border border-slate-800 rounded-2xl text-slate-400 hover:text-white hover:bg-emerald-600 hover:border-emerald-500 transition-all shadow-lg hover:shadow-emerald-500/20">
+              <a href={contact?.linkedin} className="p-4 bg-slate-900 border border-slate-800 rounded-2xl text-slate-400 hover:text-white hover:bg-emerald-600 hover:border-emerald-500 transition-all shadow-lg hover:shadow-emerald-500/20">
                 <Linkedin size={24} />
               </a>
-              <a href={`https://github.com/${MyContact.github}`} className="p-4 bg-slate-900 border border-slate-800 rounded-2xl text-slate-400 hover:text-white hover:bg-emerald-600 hover:border-emerald-500 transition-all shadow-lg hover:shadow-emerald-500/20">
+              <a href={contact?.github} className="p-4 bg-slate-900 border border-slate-800 rounded-2xl text-slate-400 hover:text-white hover:bg-emerald-600 hover:border-emerald-500 transition-all shadow-lg hover:shadow-emerald-500/20">
                 <Github size={24} />
               </a>
             </div>

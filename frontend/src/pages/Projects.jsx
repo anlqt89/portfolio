@@ -1,8 +1,8 @@
 import { useRef, useState, useEffect } from "react";
 import { ProjectCard } from "../components/ProjectCard";
 import { ProjectModal } from "../components/ProjectModal"; // 1. Import the Modal
-import { ProjectsData } from "../data/ProjectsData";
 import { useFavicon } from "../components/SetFavicon";
+import { API } from "../utilities/api";
 import { FAVICON_TITLES } from "../data/FaviconTitles";
 import { ProjectNav } from "../components/ProjectNav";
 import { ProjectMobileBar } from "../components/ProjectMobileBar";
@@ -11,8 +11,17 @@ export default function Projects() {
   useFavicon(`${FAVICON_TITLES.PORTFOLIO} | ${FAVICON_TITLES.PROJECTS}`);
   
   const [activeIndex, setActiveIndex] = useState(0);
-  const [selectedProject, setSelectedProject] = useState(null); // 2. State for Modal
+  const [selectedProject, setSelectedProject] = useState(null);
+  const [projects, setProjects] = useState([]);
   const projectRefs = useRef([]);
+
+  useEffect(() => {
+    async function loadProjects() {
+      const res = await fetch(API.projects)
+      setProjects(await res.json())
+    }
+    loadProjects()
+  }, [])
 
   const scrollToProject = (index) => {
     projectRefs.current[index]?.scrollIntoView({
@@ -52,7 +61,7 @@ export default function Projects() {
     
         {/* 1. PROJECT LIST */}
         <div className="flex flex-col gap-32">
-          {ProjectsData.map((project, index) => (
+          {projects.map((project, index) => (
             <div 
               key={project.id} 
               data-index={index}
@@ -69,14 +78,14 @@ export default function Projects() {
         </div>
 
         <ProjectNav
-          ProjectsData={ProjectsData} 
+          projects={projects} 
           activeIndex={activeIndex} 
           scrollToProject={scrollToProject} 
         />
       
       </div>
           <ProjectMobileBar
-          ProjectsData={ProjectsData} 
+          projects={projects} 
           activeIndex={activeIndex} 
           scrollToProject={scrollToProject} 
         />

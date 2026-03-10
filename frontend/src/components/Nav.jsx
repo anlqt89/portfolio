@@ -19,6 +19,7 @@ export const Nav = () => {
             { name: "Home", path: "/" },
             { name: "Projects", path: "/projects" },
             { name: "Stack", path: "/stack" },
+            { name: "Experience", path: "/experience" },
             { name: "Contact", path: "/contact" }
           ].map((link) => (
             <NavLink

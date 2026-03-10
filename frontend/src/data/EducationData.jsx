@@ -11,4 +11,5 @@ export const EducationData = [
     gpa: "3.96",
     gradDate: "Dec 2022"
   }
+  
 ];

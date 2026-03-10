@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { ChevronLeft, ChevronRight, ChevronDown } from "lucide-react";
 
-export const ProjectMobileBar = ({ ProjectsData, activeIndex, scrollToProject }) => {
+export const ProjectMobileBar = ({ projects, activeIndex, scrollToProject }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const handlePrev = () => {
@@ -9,7 +9,7 @@ export const ProjectMobileBar = ({ ProjectsData, activeIndex, scrollToProject })
   };
 
   const handleNext = () => {
-    if (activeIndex < ProjectsData.length - 1) scrollToProject(activeIndex + 1);
+    if (activeIndex < projects.length - 1) scrollToProject(activeIndex + 1);
   };
 
   const handleSelect = (index) => {
@@ -28,7 +28,7 @@ export const ProjectMobileBar = ({ ProjectsData, activeIndex, scrollToProject })
               <div className="px-5 py-3 border-b border-white/5 mb-1">
                 <span className="text-[10px] font-black text-emerald-500 uppercase tracking-[0.2em]">Select Project</span>
               </div>
-              {ProjectsData.map((project, index) => (
+              {projects.map((project, index) => (
                 <button
                   key={project.id}
                   onClick={() => handleSelect(index)}
@@ -73,7 +73,7 @@ export const ProjectMobileBar = ({ ProjectsData, activeIndex, scrollToProject })
           >
             <div className="flex items-center gap-2 max-w-full">
               <span className="text-[11px] font-black text-white uppercase tracking-[0.15em] truncate">
-                {ProjectsData[activeIndex]?.title}
+                {projects[activeIndex]?.title}
               </span>
               <ChevronDown 
                 size={14} 
@@ -86,9 +86,9 @@ export const ProjectMobileBar = ({ ProjectsData, activeIndex, scrollToProject })
           {/* NEXT - Green */}
           <button
             onClick={handleNext}
-            disabled={activeIndex === ProjectsData.length - 1}
+            disabled={activeIndex === projects.length - 1}
             className={`flex items-center p-2 transition-all ${
-              activeIndex === ProjectsData.length - 1 ? "opacity-10" : "text-emerald-500 active:scale-90"
+              activeIndex === projects.length - 1 ? "opacity-10" : "text-emerald-500 active:scale-90"
             }`}
           >
             <div className="p-1.5 bg-emerald-500/20 border border-emerald-500/40 rounded-full">

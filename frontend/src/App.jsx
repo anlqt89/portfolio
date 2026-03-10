@@ -4,8 +4,9 @@ import Home from './pages/Home'
 import Projects from './pages/Projects'
 import Stack from './pages/Stack'
 import Contact from './pages/Contact'
+import Experience from './pages/Experience'
 import { Nav } from './components/Nav';
-import Chatbot from './components/ChatBot';
+import Chatbot from './components/Chatbot';
 // import Footer from './components/Footer';
 import FloatingLeftFooter from './components/FloatingLeftFooter';
 
@@ -20,6 +21,7 @@ function App() {
           <Route path="/projects" element={<Projects />} />
           <Route path="/Stack" element={<Stack />} />
           <Route path="/Contact" element={<Contact />} />
+          <Route path="/experience" element={<Experience />} />
         </Routes>
       </main>
       <Chatbot />
