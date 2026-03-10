@@ -1,5 +1,5 @@
-import profileImg from "../assets/profile.jpeg";
 import { BinaryRain } from "./BinaryRain";
+import { API } from "../utilities/api";
 
 export default function Hero() {
   return (
@@ -17,11 +17,10 @@ export default function Hero() {
 
         {/* The Circular Profile Image - Thinner border & lower contrast */}
         <div className="relative z-20 w-full h-full max-w-[400px] max-h-[400px] rounded-full border-2 border-emerald-500/40 overflow-hidden shadow-[0_0_40px_rgba(16,185,129,0.2)] transition-all duration-500 group-hover:border-emerald-500/60">
-            <img 
-              src={profileImg} 
-              /* Reduced contrast and brightness for a smoother look */
-              className="w-full h-full object-cover brightness-105 contrast-110 grayscale-[20%] group-hover:grayscale-0 transition-all duration-700" 
-              alt="Profile" 
+            <img
+              src={API.media("profile.jpeg")}
+              className="w-full h-full object-cover brightness-105 contrast-110 grayscale-[20%] group-hover:grayscale-0 transition-all duration-700"
+              alt="Profile"
             />
         </div>
       </div>

@@ -1,10 +1,17 @@
+import { useState, useEffect } from "react";
 import { Terminal } from "lucide-react";
 import Github from 'lucide-react/dist/esm/icons/github';
 import Linkedin from 'lucide-react/dist/esm/icons/linkedin';
 import Mail from 'lucide-react/dist/esm/icons/mail';
-import { MyContact } from "../data/MyContact";
+import { API } from "../utilities/api";
 
 export default function FloatingLeftFooter() {
+  const [contact, setContact] = useState(null);
+
+  useEffect(() => {
+    fetch(API.contact).then(r => r.json()).then(setContact);
+  }, []);
+
   return (
     <div className="hidden lg:flex fixed left-0 bottom-0 top-0 w-20 flex-col justify-between items-center py-10 border-r border-emerald-500/20 bg-[#020617] z-40">
       
@@ -22,24 +29,24 @@ export default function FloatingLeftFooter() {
 
       {/* Bottom: Social Links - Brighter Base and Stronger Hover */}
       <div className="flex flex-col gap-8 items-center">
-        <a 
-          href="https://github.com" 
-          target={MyContact.github} 
+        <a
+          href={contact?.github}
+          target="_blank"
           rel="noreferrer"
           className="text-emerald-400 hover:text-emerald-200 transition-all hover:-translate-y-1 drop-shadow-[0_0_8px_rgba(52,211,153,0.6)] hover:drop-shadow-[0_0_15px_rgba(52,211,153,0.9)]"
         >
           <Github size={22} strokeWidth={2.5} />
         </a>
-        <a 
-          href="https://linkedin.com" 
-          target={MyContact.linkedin}
+        <a
+          href={contact?.linkedin}
+          target="_blank"
           rel="noreferrer"
           className="text-emerald-400 hover:text-emerald-200 transition-all hover:-translate-y-1 drop-shadow-[0_0_8px_rgba(52,211,153,0.6)] hover:drop-shadow-[0_0_15px_rgba(52,211,153,0.9)]"
         >
           <Linkedin size={22} strokeWidth={2.5} />
         </a>
-        <a 
-          href={`mailto:${MyContact.email}` }
+        <a
+          href={contact ? `mailto:${contact.email}` : undefined}
           className="text-emerald-400 hover:text-emerald-200 transition-all hover:-translate-y-1 drop-shadow-[0_0_8px_rgba(52,211,153,0.6)] hover:drop-shadow-[0_0_15px_rgba(52,211,153,0.9)]"
         >
           <Mail size={22} strokeWidth={2.5} />

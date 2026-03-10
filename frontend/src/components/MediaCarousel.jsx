@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { ChevronLeft, ChevronRight, Image as ImageIcon } from "lucide-react";
+import { API } from "../utilities/api";
 
 export const MediaCarousel = ({ media = [] }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -44,11 +45,9 @@ export const MediaCarousel = ({ media = [] }) => {
       <div className="relative z-10 w-full h-full flex items-center justify-center">
         <img
           key={currentIndex}
-          src={new URL(`../assets/${media[currentIndex]}`, import.meta.url).href}
+          src={API.media(media[currentIndex])}
           alt={`Project visual ${currentIndex + 1}`}
-          /* 'object-contain' is the "YouTube" magic here. 
-             It ensures the image is as large as possible without being cut off.
-          */
+          onError={(e) => { e.currentTarget.style.display = "none"; }}
           className="w-full h-full object-contain transition-all duration-700 ease-in-out animate-in fade-in zoom-in-95"
         />
       </div>

@@ -1,9 +1,16 @@
 import { useState, useEffect } from "react";
 import { Database, Globe, Terminal } from "lucide-react";
-import { StackLevel } from "../data/StackData";
 import { useFavicon } from "../components/SetFavicon";
 import { FAVICON_TITLES } from "../data/FaviconTitles";
 import { API } from "../utilities/api";
+
+const StackLevel = {
+  Beginner:     "20%",
+  Intermediate: "50%",
+  Proficient:   "75%",
+  Advanced:     "90%",
+  Expert:       "100%",
+};
 
 export default function Stack() {
 useFavicon(`${FAVICON_TITLES.PORTFOLIO} | ${FAVICON_TITLES.STACK}`);
