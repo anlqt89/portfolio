@@ -5,7 +5,6 @@ import Linkedin from 'lucide-react/dist/esm/icons/linkedin';
 import Mail from 'lucide-react/dist/esm/icons/mail';
 import { FAVICON_TITLES } from "../data/FaviconTitles";
 import { API } from "../utilities/api";
-import emailjs from '@emailjs/browser';
 import { useRef, useState, useEffect } from "react";
 
 export default function Contact() {
@@ -26,36 +25,30 @@ export default function Contact() {
 
 
 
-  const sendEmail = (e) => {
+  const sendEmail = async (e) => {
     e.preventDefault();
     setIsSending(true);
     setStatus("");
 
-    // console.log("SERVICE:", import.meta.env.VITE_EMAILJS_SERVICE_ID);
-    // console.log("TEMPLATE:", import.meta.env.VITE_EMAILJS_TEMPLATE_ID);
-    // console.log("PUBLIC KEY:", import.meta.env.VITE_EMAILJS_PUBLIC_KEY);
-    // console.log("FORM:", form.current);
-    
-    emailjs
-      .sendForm(
-        import.meta.env.VITE_EMAILJS_SERVICE_ID,
-        import.meta.env.VITE_EMAILJS_TEMPLATE_ID,
-        form.current,
-        import.meta.env.VITE_EMAILJS_PUBLIC_KEY
-        )
-      .then(
-        (result) => {
-          console.log('Email sent successfully:', result.text);
-          setStatus("✅ Message sent successfully!");
-          setIsSending(false);
-          form.current.reset();
-        },
-        (error) => {
-          console.error('Error sending email:', error.text);
-          setStatus("❌ Failed to send message. Try again later.");
-          setIsSending(false);
-        }
-      );
+    const data = new FormData(form.current);
+    try {
+      const res = await fetch(API.contactSend, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: data.get("name"),
+          email: data.get("email"),
+          message: data.get("message"),
+        }),
+      });
+      if (!res.ok) throw new Error();
+      setStatus("✅ Message sent successfully!");
+      form.current.reset();
+    } catch {
+      setStatus("❌ Failed to send message. Try again later.");
+    } finally {
+      setIsSending(false);
+    }
   };
 
   return (

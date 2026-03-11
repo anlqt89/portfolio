@@ -35,6 +35,8 @@ jobs:
               -p 8000:8000 \
               --name portfolio-api \
               -e FRONTEND_URL=http://${{ secrets.EC2_HOST }} \
+              -e EMAIL_ADDRESS=${{ secrets.EMAIL_ADDRESS }} \
+              -e EMAIL_PASSWORD=${{ secrets.EMAIL_PASSWORD }} \
               portfolio-api
 
             sudo systemctl restart nginx
