@@ -25,12 +25,12 @@ jobs:
             npm run build
 
             cd ../backend
-            docker build -t portfolio-api .
+            sudo docker build -t portfolio-api .
 
-            docker stop portfolio-api || true
-            docker rm portfolio-api || true
+            sudo docker stop portfolio-api || true
+            sudo docker rm portfolio-api || true
 
-            docker run -d \
+            sudo docker run -d \
               -p 8000:8000 \
               --name portfolio-api \
               portfolio-api
