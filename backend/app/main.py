@@ -34,4 +34,4 @@ app.mount("/media", StaticFiles(directory=ASSETS_DIR), name="media")
 
 @app.get("/")
 async def root():
-    return {"message": "Backend is running"}
+    return {"message": "BACKEND..."}
