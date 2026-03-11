@@ -1,0 +1,38 @@
+name: Deploy Portfolio
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Deploy to Server
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            cd ~/portfolio
+            git pull origin main
+
+            cd frontend
+            npm install
+            npm run build
+
+            cd ../backend
+            docker build -t portfolio-api .
+
+            docker stop portfolio-api || true
+            docker rm portfolio-api || true
+
+            docker run -d \
+              -p 8000:8000 \
+              --name portfolio-api \
+              portfolio-api
+
+            sudo systemctl restart nginx
