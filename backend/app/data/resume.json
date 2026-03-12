@@ -13,14 +13,19 @@
         "github": "https://github.com/anlqt89",
         "linkedin": "https://linkedin.com/in/anlamtech",
         "status": "ready to work",
-        "title": "software developer"
+        "title": "Software Engineer"
+    },
+    "resume" : {
+        "swe": "https://anlam.app/Resume_An_Lam_SW.pdf",
+        "ml": "https://anlam.app/ml-resume.pdf"
     },
     "experience": [
     {
       "title": "Database Administrator",
       "company": "Phuong Tran Inc",
-      "phone" : "8324212248",
-      "email" : "anthony@gmail.com",
+      "supervisor": "Anthony Nguyen",
+      "phone" : "440-954-0766",
+      "email" : "anthonyn1194@gmail.com",
       "location": "Mentor, Ohio",
       "dates": "Jan 2023 - Mar 2025",
       "tech_stack": ["PostgreSQL", "Python", "Node.js", "Selenium", "React"],
@@ -35,8 +40,9 @@
     {
       "title": "Student Researcher",
       "company": "Texas Tech University",
-      "phone" : "8324212248",
-      "email" : "anthony@gmail.com",
+      "supervisor": "Yong Chen",
+      "phone" : "806-834-0284",
+      "email" : " yong.chen@ttu.edu",
       "location": "Lubbock, Texas",
       "dates": "Jan 2022 - Dec 2022",
       "tech_stack": ["C", "C++", "Bash", "Linux", "RISC-V"],

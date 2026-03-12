@@ -101,7 +101,22 @@ const quickActions = [
                       : 'bg-emerald-500/5 border border-emerald-500/20 text-emerald-100 rounded-tl-none'
                   }`}
                 >
-                  {m.text}
+                  {m.text.split('\n').map((line, j) => {
+                    const urlRegex = /(https?:\/\/[^\s]+)/g;
+                    const parts = line.split(urlRegex);
+                    return (
+                      <span key={j}>
+                        {parts.map((part, k) =>
+                          urlRegex.test(part) ? (
+                            <a key={k} href={part} target="_blank" rel="noopener noreferrer" className="underline text-emerald-400 hover:text-emerald-300 break-all">
+                              {part}
+                            </a>
+                          ) : part
+                        )}
+                        {j < m.text.split('\n').length - 1 && <br />}
+                      </span>
+                    );
+                  })}
                 </div>
               </div>
             ))}

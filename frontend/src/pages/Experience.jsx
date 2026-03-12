@@ -57,6 +57,13 @@ export default function Experience() {
                   </div>
                 </div>
 
+                {/* Supervisor */}
+                {job.supervisor && (
+                  <p className="text-xs text-slate-400 mb-3">
+                    Supervisor: <span className="text-slate-300 font-semibold">{job.supervisor}</span>
+                  </p>
+                )}
+
                 {/* Employer contact */}
                 {(job.phone || job.email) && (
                   <div className="flex flex-wrap gap-4 mb-5 text-xs text-slate-400">

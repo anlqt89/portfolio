@@ -25,10 +25,15 @@ export default function Home() {
       loadData()
     }, [])
 
-    const handleDownload = () => {
+    const handleDownload = (type) => {
         const link = document.createElement('a');
-        link.href = API.resumeDownload;
-        link.setAttribute('download', 'resume-anlam.pdf');
+        if (type === 'ml') {
+            link.href = '/ml-resume.pdf';
+            link.setAttribute('download', 'Resume_An_Lam_ML.pdf');
+        } else {
+            link.href = '/Resume_An_Lam_SW.pdf';
+            link.setAttribute('download', 'Resume_An_Lam_SWE.pdf');
+        }
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
@@ -112,12 +117,19 @@ export default function Home() {
                         >
                             {isHovered ? "Click Me" : "Hire Me"}
                         </button>
-            <button 
-  onClick={handleDownload} 
+            <button
+  onClick={() => handleDownload('swe')}
   className="border border-emerald-500/20 px-8 py-4 rounded-md font-bold transition-all text-slate-300 uppercase tracking-widest text-xs
              hover:bg-emerald-500/10 hover:text-emerald-400 hover:border-emerald-400 hover:shadow-[0_0_15px_rgba(16,185,129,0.2)]"
 >
-  Download Resumé
+  Resumé (SWE)
+</button>
+            <button
+  onClick={() => handleDownload('ml')}
+  className="border border-emerald-500/20 px-8 py-4 rounded-md font-bold transition-all text-slate-300 uppercase tracking-widest text-xs
+             hover:bg-emerald-500/10 hover:text-emerald-400 hover:border-emerald-400 hover:shadow-[0_0_15px_rgba(16,185,129,0.2)]"
+>
+  Resumé (AI/ML)
 </button>
           </div>
         </div>
