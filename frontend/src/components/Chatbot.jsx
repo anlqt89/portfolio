@@ -69,9 +69,9 @@ const quickActions = [
 ];
 
   return (
-    <div className="fixed bottom-8 right-8 z-[9999] flex flex-col items-end">
+    <div className="fixed bottom-4 right-4 sm:bottom-8 sm:right-8 z-[9999] flex flex-col items-end">
       {isOpen && (
-        <div className="mb-6 w-[340px] h-[500px] bg-[#020617] border border-emerald-500/20 rounded-xl shadow-[0_0_30px_rgba(16,185,129,0.1)] flex flex-col overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-300">
+        <div className="mb-4 w-[calc(100vw-2rem)] max-w-[340px] h-[min(500px,70vh)] bg-[#020617] border border-emerald-500/20 rounded-xl shadow-[0_0_30px_rgba(16,185,129,0.1)] flex flex-col overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-300">
           <div className="p-4 border-b border-emerald-500/10 flex justify-between items-center bg-emerald-500/5">
             <div className="flex items-center gap-3">
               <div className="w-2 h-2 bg-[#10b981] rounded-full shadow-[0_0_12px_#10b981] animate-pulse" />

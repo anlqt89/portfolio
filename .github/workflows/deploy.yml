@@ -28,7 +28,8 @@ jobs:
             echo "===== [2/4] Building frontend ====="
             cd frontend
             npm install
-            VITE_API_URL=https://anlam.app npm run build
+            VITE_API_URL=https://anlam.app npx vite build --outDir dist-new
+            rm -rf dist && mv dist-new dist
             echo "✓ Frontend build complete"
 
             echo "===== [3/4] Building backend Docker image ====="
