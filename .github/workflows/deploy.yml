@@ -22,7 +22,7 @@ jobs:
 
             cd frontend
             npm install
-            VITE_API_URL=http://${{ secrets.EC2_HOST }}:8000 npm run build
+            VITE_API_URL=https://anlam.app npm run build
 
             cd ../backend
             sudo docker build -t portfolio-api .
@@ -33,7 +33,7 @@ jobs:
             sudo docker run -d \
               -p 8000:8000 \
               --name portfolio-api \
-              -e FRONTEND_URL=http://${{ secrets.EC2_HOST }} \
+              -e FRONTEND_URL=https://anlam.app \
               -e EMAIL_ADDRESS=${{ secrets.EMAIL_ADDRESS }} \
               -e EMAIL_PASSWORD=${{ secrets.EMAIL_PASSWORD }} \
               portfolio-api
