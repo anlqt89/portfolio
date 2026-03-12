@@ -37,16 +37,29 @@ export const ProjectCard = ({ project, onClick }) => {
                   <Github size={14} /> Source_Code
                 </a>
               )}
-              {project.link && (
-                <a 
-                href={project.link} 
-                target="_blank" 
-                rel="noreferrer"
-                className="flex items-center gap-2 text-xs font-mono text-emerald-500 animate-pulse hover:text-emerald-400 transition-colors"
-                onClick={(e) => e.stopPropagation()}
-              >
-                <ExternalLink size={14} /> Live_Demo
-              </a>
+              {project.demoLinks ? (
+                project.demoLinks.map(({ label, url }) => (
+                  <a
+                    key={label}
+                    href={url}
+                    target={url.startsWith("http") ? "_blank" : "_self"}
+                    rel="noreferrer"
+                    className="flex items-center gap-2 text-xs font-mono text-emerald-500 animate-pulse hover:text-emerald-400 transition-colors"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <ExternalLink size={14} /> {label}
+                  </a>
+                ))
+              ) : project.link && (
+                <a
+                  href={project.link}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="flex items-center gap-2 text-xs font-mono text-emerald-500 animate-pulse hover:text-emerald-400 transition-colors"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <ExternalLink size={14} /> Live_Demo
+                </a>
               )}
             </div>
 
