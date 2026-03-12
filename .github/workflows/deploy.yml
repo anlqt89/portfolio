@@ -34,6 +34,7 @@ jobs:
               -p 8000:8000 \
               --name portfolio-api \
               -e FRONTEND_URL=https://anlam.app \
+              -e OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }} \
               -e EMAIL_ADDRESS=${{ secrets.EMAIL_ADDRESS }} \
               -e EMAIL_PASSWORD=${{ secrets.EMAIL_PASSWORD }} \
               portfolio-api
