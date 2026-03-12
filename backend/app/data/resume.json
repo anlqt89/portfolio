@@ -16,8 +16,8 @@
         "title": "Software Engineer"
     },
     "resume" : {
-        "swe": "https://anlam.app/Resume_An_Lam_SW.pdf",
-        "ml": "https://anlam.app/ml-resume.pdf"
+        "swe": "https://anlam.app/resume-sw.pdf",
+        "ml": "https://anlam.app/resume-ML.pdf"
     },
     "experience": [
     {
@@ -178,7 +178,7 @@
     { "label": "Play 8-Puzzle", "url": "/puzzle" },
     { "label": "Performance Chart", "url": "/performance" }
   ],
-  "git": ""
+  "git": "https://github.com/anlqt89/AI-Labs/tree/main/8-puzzle-game"
 },
     {
   "id": 1,
@@ -520,7 +520,7 @@
   "link": "",
   "stack": "Python + TF-IDF + Cosine Similarity",
   "mediaUrls": ["default.svg"],
-  "git": ""
+  "git": "https://github.com/anlqt89/AI-Labs/tree/main/document-similarity-search"
 },
 {
   "id": 6,

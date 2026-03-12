@@ -28,10 +28,10 @@ export default function Home() {
     const handleDownload = (type) => {
         const link = document.createElement('a');
         if (type === 'ml') {
-            link.href = '/ml-resume.pdf';
+            link.href = '/resume-ML.pdf';
             link.setAttribute('download', 'Resume_An_Lam_ML.pdf');
         } else {
-            link.href = '/Resume_An_Lam_SW.pdf';
+            link.href = '/resume-sw.pdf';
             link.setAttribute('download', 'Resume_An_Lam_SWE.pdf');
         }
         document.body.appendChild(link);

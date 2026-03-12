@@ -1,11 +1,12 @@
 import { useRef, useState, useEffect } from "react";
 import { ProjectCard } from "../components/ProjectCard";
-import { ProjectModal } from "../components/ProjectModal"; // 1. Import the Modal
+import { ProjectModal } from "../components/ProjectModal";
 import { useFavicon } from "../components/SetFavicon";
 import { API } from "../utilities/api";
 import { FAVICON_TITLES } from "../data/FaviconTitles";
 import { ProjectNav } from "../components/ProjectNav";
 import { ProjectMobileBar } from "../components/ProjectMobileBar";
+import { Search } from "lucide-react";
 
 const CATEGORIES = [
   "All",
@@ -21,6 +22,10 @@ export default function Projects() {
   const [selectedProject, setSelectedProject] = useState(null);
   const [projects, setProjects] = useState([]);
   const [activeCategory, setActiveCategory] = useState("All");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState(null); // null = not searching
+  const [searchLoading, setSearchLoading] = useState(false);
+  const debounceRef = useRef(null);
   const projectRefs = useRef([]);
 
   useEffect(() => {
@@ -31,9 +36,32 @@ export default function Projects() {
     loadProjects()
   }, [])
 
-  const filteredProjects = activeCategory === "All"
-    ? projects
-    : projects.filter((p) => p.category === activeCategory);
+  const handleSearch = (e) => {
+    const val = e.target.value;
+    setSearchQuery(val);
+    clearTimeout(debounceRef.current);
+    if (!val.trim()) { setSearchResults(null); return; }
+    debounceRef.current = setTimeout(async () => {
+      setSearchLoading(true);
+      try {
+        const res = await fetch(API.search(val));
+        const data = await res.json();
+        const projectIds = data.results
+          .filter(r => r.type === "project")
+          .map(r => r.data.id);
+        setSearchResults(projectIds);
+      } catch { setSearchResults([]); }
+      finally { setSearchLoading(false); }
+    }, 350);
+  };
+
+  const filteredProjects = (() => {
+    let list = activeCategory === "All" ? projects : projects.filter(p => p.category === activeCategory);
+    if (searchResults !== null) {
+      list = searchResults.map(id => list.find(p => p.id === id)).filter(Boolean);
+    }
+    return list;
+  })();
 
   const scrollToProject = (index) => {
     projectRefs.current[index]?.scrollIntoView({
@@ -69,21 +97,38 @@ export default function Projects() {
         <div className="h-px flex-1 bg-gradient-to-r from-emerald-500/50 via-emerald-500/10 to-transparent"></div>
       </div>
 
-      {/* Category Filter */}
-      <div className="flex flex-wrap gap-2 mb-12">
-        {CATEGORIES.map((cat) => (
-          <button
-            key={cat}
-            onClick={() => setActiveCategory(cat)}
-            className={`px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider border transition-all duration-200 ${
-              activeCategory === cat
-                ? "bg-emerald-500 text-[#020617] border-emerald-500"
-                : "bg-transparent text-slate-400 border-slate-700 hover:border-emerald-500/50 hover:text-emerald-400"
-            }`}
-          >
-            {cat}
-          </button>
-        ))}
+      {/* Search + Category Filter */}
+      <div className="flex flex-col gap-4 mb-12">
+        {/* Search bar */}
+        <div className="relative max-w-md">
+          <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
+          <input
+            value={searchQuery}
+            onChange={handleSearch}
+            placeholder="Search projects by skill, tech, keyword..."
+            className="w-full bg-slate-900 border border-slate-800 rounded-xl pl-9 pr-4 py-2.5 text-sm text-white placeholder-slate-600 outline-none focus:border-emerald-500/50 transition-colors"
+          />
+          {searchLoading && (
+            <div className="absolute right-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 border-2 border-emerald-500/40 border-t-emerald-500 rounded-full animate-spin" />
+          )}
+        </div>
+
+        {/* Category pills */}
+        <div className="flex flex-wrap gap-2">
+          {CATEGORIES.map((cat) => (
+            <button
+              key={cat}
+              onClick={() => setActiveCategory(cat)}
+              className={`px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider border transition-all duration-200 ${
+                activeCategory === cat
+                  ? "bg-emerald-500 text-[#020617] border-emerald-500"
+                  : "bg-transparent text-slate-400 border-slate-700 hover:border-emerald-500/50 hover:text-emerald-400"
+              }`}
+            >
+              {cat}
+            </button>
+          ))}
+        </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-[1fr_180px] gap-12">

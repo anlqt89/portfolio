@@ -11,4 +11,5 @@ export const API = {
   education:       `${API_BASE_URL}/api/education`,
   resumeDownload:  `${API_BASE_URL}/api/resume/download`,
   media: (filename) => `${API_BASE_URL}/media/${filename}`,
+  search: (q) => `${API_BASE_URL}/api/search?q=${encodeURIComponent(q)}`,
 };
