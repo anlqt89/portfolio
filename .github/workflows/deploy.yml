@@ -17,17 +17,24 @@ jobs:
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
+            echo "===== [1/6] Pulling latest code ====="
             cd ~/portfolio
             git fetch origin
             git reset --hard origin/main
+            echo "✓ Code updated to $(git rev-parse --short HEAD)"
 
+            echo "===== [2/6] Building frontend ====="
             cd frontend
             npm install
             VITE_API_URL=https://anlam.app npm run build
+            echo "✓ Frontend build complete"
 
+            echo "===== [3/6] Building backend Docker image ====="
             cd ../backend
             sudo docker build -t portfolio-api .
+            echo "✓ Docker image built"
 
+            echo "===== [4/6] Restarting backend container ====="
             sudo docker stop portfolio-api || true
             sudo docker rm portfolio-api || true
 
@@ -39,5 +46,15 @@ jobs:
               -e EMAIL_ADDRESS=${{ secrets.EMAIL_ADDRESS }} \
               -e EMAIL_PASSWORD=${{ secrets.EMAIL_PASSWORD }} \
               portfolio-api
+            echo "✓ Backend container started"
 
+            echo "===== [5/6] Restarting nginx ====="
             sudo systemctl restart nginx
+            echo "✓ Nginx restarted"
+
+            echo "===== [6/6] Health check ====="
+            sleep 3
+            curl -sf http://localhost:8000/api/projects > /dev/null && echo "✓ Backend API responding" || echo "✗ Backend API not responding"
+            curl -sf http://localhost:80 > /dev/null && echo "✓ Frontend serving" || echo "✗ Frontend not serving"
+            sudo docker ps --filter name=portfolio-api --format "Container: {{.Names}} | Status: {{.Status}}"
+            echo "===== Deploy complete ====="
