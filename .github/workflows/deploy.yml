@@ -17,27 +17,28 @@ jobs:
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            echo "===== [1/6] Pulling latest code ====="
+            set -e
+
+            echo "===== [1/4] Pulling latest code ====="
             cd ~/portfolio
             git fetch origin
             git reset --hard origin/main
             echo "✓ Code updated to $(git rev-parse --short HEAD)"
 
-            echo "===== [2/6] Building frontend ====="
+            echo "===== [2/4] Building frontend ====="
             cd frontend
             npm install
             VITE_API_URL=https://anlam.app npm run build
             echo "✓ Frontend build complete"
 
-            echo "===== [3/6] Building backend Docker image ====="
+            echo "===== [3/4] Building backend Docker image ====="
             cd ../backend
-            sudo docker build -t portfolio-api .
+            sudo docker build -t portfolio-api-new .
             echo "✓ Docker image built"
 
-            echo "===== [4/6] Restarting backend container ====="
+            echo "===== [4/4] Swapping containers ====="
             sudo docker stop portfolio-api || true
             sudo docker rm portfolio-api || true
-
             sudo docker run -d \
               -p 8000:8000 \
               --name portfolio-api \
@@ -45,16 +46,17 @@ jobs:
               -e OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }} \
               -e EMAIL_ADDRESS=${{ secrets.EMAIL_ADDRESS }} \
               -e EMAIL_PASSWORD=${{ secrets.EMAIL_PASSWORD }} \
-              portfolio-api
-            echo "✓ Backend container started"
+              portfolio-api-new
+            sudo docker rmi portfolio-api || true
+            sudo docker tag portfolio-api-new portfolio-api
+            echo "✓ Container swapped"
 
-            echo "===== [5/6] Restarting nginx ====="
-            sudo systemctl restart nginx
-            echo "✓ Nginx restarted"
+            sudo systemctl reload nginx
+            echo "✓ Nginx reloaded"
 
-            echo "===== [6/6] Health check ====="
+            echo "===== Health check ====="
             sleep 3
-            curl -sf http://localhost:8000/api/projects > /dev/null && echo "✓ Backend API responding" || echo "✗ Backend API not responding"
-            curl -sf http://localhost:80 > /dev/null && echo "✓ Frontend serving" || echo "✗ Frontend not serving"
+            curl -sf http://localhost:8000/api/projects > /dev/null && echo "✓ Backend OK" || echo "✗ Backend not responding"
+            curl -sf http://localhost:80 > /dev/null && echo "✓ Frontend OK" || echo "✗ Frontend not serving"
             sudo docker ps --filter name=portfolio-api --format "Container: {{.Names}} | Status: {{.Status}}"
             echo "===== Deploy complete ====="
