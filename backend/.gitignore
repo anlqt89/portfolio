@@ -1,4 +1,111 @@
-backend/.env
-frontend/.env
-backend/.env
-frontend/.env
+# =========================
+# Python
+# =========================
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Compiled extensions
+*.so
+
+# Distribution / packaging
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+*.egg
+MANIFEST
+
+# =========================
+# Virtual environments
+# =========================
+venv/
+env/
+ENV/
+.venv/
+
+# =========================
+# Environment variables (IMPORTANT)
+# =========================
+.env
+.env.*
+*.env
+
+# =========================
+# Logs
+# =========================
+*.log
+logs/
+
+# =========================
+# Database files
+# =========================
+*.sqlite3
+*.db
+
+# =========================
+# Testing
+# =========================
+.coverage
+.coverage.*
+htmlcov/
+.pytest_cache/
+
+# =========================
+# Jupyter
+# =========================
+.ipynb_checkpoints
+
+# =========================
+# IDE / Editors
+# =========================
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+
+# =========================
+# FastAPI / Uvicorn
+# =========================
+*.pid
+*.pid.lock
+
+# =========================
+# Docker
+# =========================
+docker-compose.override.yml
+
+# =========================
+# Cache
+# =========================
+.cache/
+*.cache
+
+# =========================
+# Mypy / Ruff / Pyright
+# =========================
+.mypy_cache/
+.pyright/
+.ruff_cache/
+
+# =========================
+# Coverage
+# =========================
+coverage.xml
+nosetests.xml
+
+# =========================
+# Temporary files
+# =========================
+*.tmp
+*.temp
+tmp/
