@@ -28,7 +28,7 @@ jobs:
             echo "===== [2/4] Building frontend ====="
             cd frontend
             npm install
-            VITE_API_URL=https://anlam.app npx vite build --outDir dist-new
+            VITE_API_URL=/api npx vite build --outDir dist-new
             rm -rf dist && mv dist-new dist
             echo "✓ Frontend build complete"
 
@@ -41,6 +41,7 @@ jobs:
             sudo docker stop portfolio-api || true
             sudo docker rm portfolio-api || true
             sudo docker run -d \
+              --restart always \
               -p 8000:8000 \
               --name portfolio-api \
               -e FRONTEND_URL=https://anlam.app \
