@@ -143,42 +143,23 @@
 
   "projects": [
     {
-  "id": 13,
+  "id": 15,
   "category": "Machine Learning / AI",
-  "title": "8-Puzzle AI Solver",
+  "title": "Naive Bayes Text Classifier",
   "deploymentStatus": "completed",
-  "description": "A Python-based AI solver for the 8-Puzzle problem implementing and benchmarking 7 search algorithms to evaluate state-space exploration, heuristic optimization, and computational trade-offs.",
+  "description": "A from-scratch Multinomial Naive Bayes classifier for multiclass text classification, trained and evaluated on 20,000 documents across 20 categories.",
   "achievements": [
-    "Developed a Python-based solver utilizing BFS, DFS, IDS, DLS, UCS, Greedy, and A* search algorithms to evaluate state-space exploration.",
-    "Implemented Manhattan L1 distance heuristic for A* search, significantly reducing node expansion and optimizing pathfinding efficiency.",
-    "Benchmarked execution time and memory usage across all 7 techniques to analyze Big-O trade-offs between completeness and optimality.",
-    "Integrated inversion-count algorithms to detect unsolvable configurations and utilized efficient data structures for state-space management."
+    "Built a from-scratch Multinomial Naive Bayes classifier for multiclass text classification on a dataset of 20,000 documents across 20 categories.",
+    "Implemented full text preprocessing pipeline including tokenization, normalization, stop-word removal, and vocabulary construction (54,765 tokens).",
+    "Developed Laplace smoothing and log-probability scoring to ensure numerical stability and handle unseen words during prediction.",
+    "Evaluated model performance with per-class and macro accuracy, achieving 90.16% training accuracy and 79.32% testing accuracy."
   ],
-  "technologies": [
-    "Python",
-    "State Space Search",
-    "BFS",
-    "DFS",
-    "DLS",
-    "IDS",
-    "UCS",
-    "Greedy",
-    "A*"
-  ],
-  "tags": [
-    "AI",
-    "Search Algorithms",
-    "Heuristics",
-    "Python"
-  ],
-  "link": "/puzzle",
-  "stack": "Python + Search Algorithms",
-  "mediaUrls": ["8puzzle_game.png", "8puzzle_chart.png", "8puzzle_result_sumary.png"],
-  "demoLinks": [
-    { "label": "Play 8-Puzzle", "url": "/puzzle" },
-    { "label": "Performance Chart", "url": "/performance" }
-  ],
-  "git": "https://github.com/anlqt89/AI-Labs/tree/main/8-puzzle-game"
+  "technologies": ["Python", "Machine Learning", "NLP", "Probabilistic Models", "Laplace Smoothing", "Text Classification"],
+  "tags": ["NLP", "Machine Learning", "Text Classification", "Python"],
+  "link": "",
+  "stack": "Python + Naive Bayes + NLP",
+  "mediaUrls": ["naive_bayes_confusion_matrix.jpg"],
+  "git": "https://github.com/anlqt89/AI-Labs/tree/main/naive-bayes-text-classifier"
 },
     {
   "id": 1,
@@ -492,6 +473,43 @@
   "stack": "Node.js + PostgreSQL + REST APIs",
   "mediaUrls": ["default.svg"],
   "git": ""
+},{
+  "id": 13,
+  "category": "Machine Learning / AI",
+  "title": "8-Puzzle AI Solver",
+  "deploymentStatus": "completed",
+  "description": "A Python-based AI solver for the 8-Puzzle problem implementing and benchmarking 7 search algorithms to evaluate state-space exploration, heuristic optimization, and computational trade-offs.",
+  "achievements": [
+    "Developed a Python-based solver utilizing BFS, DFS, IDS, DLS, UCS, Greedy, and A* search algorithms to evaluate state-space exploration.",
+    "Implemented Manhattan L1 distance heuristic for A* search, significantly reducing node expansion and optimizing pathfinding efficiency.",
+    "Benchmarked execution time and memory usage across all 7 techniques to analyze Big-O trade-offs between completeness and optimality.",
+    "Integrated inversion-count algorithms to detect unsolvable configurations and utilized efficient data structures for state-space management."
+  ],
+  "technologies": [
+    "Python",
+    "State Space Search",
+    "BFS",
+    "DFS",
+    "DLS",
+    "IDS",
+    "UCS",
+    "Greedy",
+    "A*"
+  ],
+  "tags": [
+    "AI",
+    "Search Algorithms",
+    "Heuristics",
+    "Python"
+  ],
+  "link": "/puzzle",
+  "stack": "Python + Search Algorithms",
+  "mediaUrls": ["8puzzle_game.png", "8puzzle_chart.png", "8puzzle_result_sumary.png"],
+  "demoLinks": [
+    { "label": "Play 8-Puzzle", "url": "/puzzle" },
+    { "label": "Performance Chart", "url": "/performance" }
+  ],
+  "git": "https://github.com/anlqt89/AI-Labs/tree/main/8-puzzle-game"
 },
 {
   "id": 14,
