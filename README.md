@@ -23,6 +23,31 @@ An intelligent conversational assistant powered by **OpenAI GPT-4o-mini** that a
 - **Contextual system prompt** — behaves as a professional AI assistant representing the portfolio owner, with a recruiter-friendly tone
 - **Async FastAPI endpoint** — non-blocking, ready for streaming
 
+#### System Design
+
+```
+User → React Chatbot.jsx
+         ↓ POST /api/chat { question }
+       FastAPI chat.py
+         ↓
+       openai_service.py
+         ├── detect_intent(question)     # keyword matching → intent label
+         ├── build_context(intent)       # pull relevant slice from resume.json
+         └── build_system_prompt()       # behavioral instructions
+         ↓ GPT-4o-mini
+       response → user
+```
+
+#### Planned Improvements
+
+| Feature | Current | Planned |
+|---|---|---|
+| Intent detection | Keyword regex | TF-IDF retrieval (already built) |
+| Context | Full resume slice | Top-K matched docs only |
+| Memory | Single turn | Last 6 turns sent as history |
+| Response | Buffered | Streaming via SSE |
+| Fallback | Generic reply | "I don't know" + suggestions |
+
 ### TF-IDF Search Engine
 A custom information retrieval engine built from scratch (no external IR libraries), adapted from a Data Mining (CSE 5334) course project.
 

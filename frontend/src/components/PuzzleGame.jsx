@@ -1,7 +1,27 @@
 import { useState, useEffect, useCallback } from "react";
 
-const START = [2, 3, 6, 1, 0, 7, 4, 8, 5];
-const GOAL  = [1, 2, 3, 4, 5, 6, 7, 8, 0];
+const GOAL = [1, 2, 3, 4, 5, 6, 7, 8, 0];
+
+// Check solvability via inversion count
+function isSolvable(state) {
+  const tiles = state.filter(v => v !== 0);
+  let inversions = 0;
+  for (let i = 0; i < tiles.length; i++)
+    for (let j = i + 1; j < tiles.length; j++)
+      if (tiles[i] > tiles[j]) inversions++;
+  return inversions % 2 === 0;
+}
+
+function randomStart() {
+  const tiles = [1, 2, 3, 4, 5, 6, 7, 8, 0];
+  do {
+    for (let i = tiles.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [tiles[i], tiles[j]] = [tiles[j], tiles[i]];
+    }
+  } while (!isSolvable(tiles) || tiles.join(",") === GOAL.join(","));
+  return tiles;
+}
 
 function manhattan(state, goal) {
   const pos = {};
@@ -16,17 +36,48 @@ function manhattan(state, goal) {
   return d;
 }
 
+// Binary min-heap — O(log N) push/pop instead of O(N log N) array.sort
+class MinHeap {
+  constructor() { this.h = []; }
+  push(node) {
+    this.h.push(node);
+    let i = this.h.length - 1;
+    while (i > 0) {
+      const p = (i - 1) >> 1;
+      if (this.h[p].f <= this.h[i].f) break;
+      [this.h[p], this.h[i]] = [this.h[i], this.h[p]];
+      i = p;
+    }
+  }
+  pop() {
+    const top = this.h[0];
+    const last = this.h.pop();
+    if (this.h.length > 0) {
+      this.h[0] = last;
+      let i = 0;
+      while (true) {
+        let s = i, l = 2*i+1, r = 2*i+2;
+        if (l < this.h.length && this.h[l].f < this.h[s].f) s = l;
+        if (r < this.h.length && this.h[r].f < this.h[s].f) s = r;
+        if (s === i) break;
+        [this.h[s], this.h[i]] = [this.h[i], this.h[s]];
+        i = s;
+      }
+    }
+    return top;
+  }
+  get length() { return this.h.length; }
+}
+
 function astar(start, goal) {
   const goalKey = goal.join(",");
   const DIRS = [-3, 3, -1, 1];
-  const heap = [];
-  const push = (node) => { heap.push(node); heap.sort((a, b) => a.f - b.f); };
-  const pop  = () => heap.shift();
-  const h    = (s) => manhattan(s, goal);
-  push({ state: start, g: 0, f: h(start), path: [] });
+  const heap = new MinHeap();
+  const h = (s) => manhattan(s, goal);
+  heap.push({ state: start, g: 0, f: h(start), path: [] });
   const visited = new Set();
   while (heap.length) {
-    const { state, g, path } = pop();
+    const { state, g, path } = heap.pop();
     const key = state.join(",");
     if (visited.has(key)) continue;
     visited.add(key);
@@ -40,35 +91,61 @@ function astar(start, goal) {
       if (d ===  1 && zc === 2) continue;
       const ns = [...state];
       ns[zi] = ns[ti]; ns[ti] = 0;
-      const ng = g + state[ti];
-      push({ state: ns, g: ng, f: ng + h(ns), path: [...path, { from: ti, to: zi, tile: state[ti] }] });
+      const ng = g + 1;
+      heap.push({ state: ns, g: ng, f: ng + h(ns), path: [...path, { from: ti, to: zi, tile: state[ti] }] });
+    }
+  }
+  return null;
+}
+
+// Greedy Best-First Search — uses only h(n), ignores g(n)
+function greedy(start, goal) {
+  const goalKey = goal.join(",");
+  const DIRS = [-3, 3, -1, 1];
+  const heap = new MinHeap();
+  const h = (s) => manhattan(s, goal);
+  heap.push({ state: start, f: h(start), path: [] });
+  const visited = new Set();
+  while (heap.length) {
+    const { state, path } = heap.pop();
+    const key = state.join(",");
+    if (visited.has(key)) continue;
+    visited.add(key);
+    if (key === goalKey) return path;
+    const zi = state.indexOf(0);
+    const zc = zi % 3;
+    for (const d of DIRS) {
+      const ti = zi + d;
+      if (ti < 0 || ti > 8) continue;
+      if (d === -1 && zc === 0) continue;
+      if (d ===  1 && zc === 2) continue;
+      const ns = [...state];
+      ns[zi] = ns[ti]; ns[ti] = 0;
+      heap.push({ state: ns, f: h(ns), path: [...path, { from: ti, to: zi, tile: state[ti] }] });
     }
   }
   return null;
 }
 
 function moveLabel(from, to) {
-  const d = to - from;
-  if (d === -3) return "↑";
-  if (d ===  3) return "↓";
-  if (d === -1) return "←";
-  if (d ===  1) return "→";
+  const d = to - from; // direction tile moves — key is opposite (moves blank)
+  if (d === -3) return "↓ / S";
+  if (d ===  3) return "↑ / W";
+  if (d === -1) return "→ / D";
+  if (d ===  1) return "← / A";
   return "?";
 }
 
 export default function PuzzleGame() {
-  const [board,   setBoard]   = useState([...START]);
-  const [moves,   setMoves]   = useState(0);
-  const [won,     setWon]     = useState(false);
-  const [hint,    setHint]    = useState(null);
-  const [optimal, setOptimal] = useState(null);
-  const [solving, setSolving] = useState(false);
+  const [board,       setBoard]       = useState(() => randomStart());
+  const [moves,       setMoves]       = useState(0);
+  const [hint,        setHint]        = useState(null);
+  const [optimal,     setOptimal]     = useState(null);
+  const [solving,     setSolving]     = useState(false);
+  const [slowWarning, setSlowWarning] = useState(null); // stores elapsed ms
+  const [hintMode,    setHintMode]    = useState(null);
 
-  const goalKey = GOAL.join(",");
-
-  useEffect(() => {
-    if (board.join(",") === goalKey) setWon(true);
-  }, [board, goalKey]);
+  const won = board.join(",") === GOAL.join(",");
 
   const movable = useCallback((idx) => {
     const zi = board.indexOf(0);
@@ -113,23 +190,31 @@ export default function PuzzleGame() {
     return () => window.removeEventListener("keydown", handler);
   }, [board, slide]);
 
-  const getHint = () => {
+  const getHint = (algo = "astar") => {
     setSolving(true);
+    setHintMode(algo);
+    if (algo === "astar") setSlowWarning(true);
+    else setSlowWarning(null);
+
     setTimeout(() => {
-      const path = astar(board, GOAL);
+      const path = algo === "greedy" ? greedy(board, GOAL) : astar(board, GOAL);
+
       setSolving(false);
+      setSlowWarning(null);
+
       if (!path || path.length === 0) return;
       setHint(path);
-      setOptimal(moves + path.length);
+      if (algo === "astar") setOptimal(moves + path.length);
     }, 20);
   };
 
   const reset = () => {
-    setBoard([...START]);
+    setBoard(randomStart());
     setMoves(0);
-    setWon(false);
     setHint(null);
     setOptimal(null);
+    setSlowWarning(null);
+    setHintMode(null);
   };
 
   const tileClass = (val, i) => {
@@ -185,37 +270,58 @@ export default function PuzzleGame() {
               <div className="w-px h-10 bg-slate-700" />
               <div className="flex flex-col items-center gap-0.5">
                 <span className="text-[1.8rem] font-black text-violet-300">{optimal}</span>
-                <span className="text-[0.7rem] font-semibold uppercase tracking-widest text-slate-500">Optimal</span>
+                <span className="text-[0.7rem] font-semibold uppercase tracking-widest text-slate-500">Optimal (A*)</span>
               </div>
             </>
           )}
         </div>
 
+        {/* Slow warning */}
+        {slowWarning && (
+          <div className="bg-yellow-500/10 border border-yellow-500/40 rounded-xl px-5 py-3 text-sm text-yellow-300 text-center max-w-sm">
+            ⚠️ A* may take up to <strong className="text-white">~5s</strong> — O(b^d), up to ~181,440 states. Or try <button onClick={() => getHint("greedy")} className="underline font-bold hover:text-yellow-200">Greedy</button> for instant (non-optimal) result.
+          </div>
+        )}
+
+        {/* Solving indicator */}
+        {solving && (
+          <div className="text-xs text-slate-500 animate-pulse">Thinking…</div>
+        )}
+
         {/* Hint banner */}
-        {hint && hint.length > 0 && (
+        {hint && hint.length > 0 && !solving && (
           <div className="bg-slate-800 border border-indigo-500 rounded-xl px-5 py-3 text-sm text-violet-300 text-center max-w-sm">
-            {hint.length} step(s) left · Next: press <strong className="text-white">{moveLabel(hint[0].from, hint[0].to)}</strong> to move tile <strong className="text-white">{hint[0].tile}</strong> <span className="text-slate-400">(highlighted in purple)</span>
+            {hint.length} step(s) left · Click tile <strong className="text-white">{hint[0].tile}</strong> or press <strong className="text-white">{moveLabel(hint[0].from, hint[0].to)}</strong>
+            <span className="text-slate-400"> (highlighted in purple)</span>
+            {hintMode === "greedy" && <span className="block text-xs text-yellow-400 mt-1">⚡ Greedy path — fast but not optimal</span>}
           </div>
         )}
 
         {/* Buttons */}
         <div className="flex gap-3">
           <button
-            onClick={getHint}
+            onClick={() => getHint("astar")}
             disabled={won || solving}
             className="px-5 py-2.5 rounded-xl font-bold text-sm text-white bg-gradient-to-r from-indigo-500 to-violet-500 hover:-translate-y-px active:translate-y-0 transition-transform disabled:opacity-40 disabled:cursor-not-allowed"
           >
-            {solving ? "Thinking…" : "💡 Hint (A*)"}
+            {solving && hintMode === "astar" ? "Thinking…" : "💡 Hint (A*)"}
+          </button>
+          <button
+            onClick={() => getHint("greedy")}
+            disabled={won || solving}
+            className="px-5 py-2.5 rounded-xl font-bold text-sm text-white bg-gradient-to-r from-yellow-500 to-orange-500 hover:-translate-y-px active:translate-y-0 transition-transform disabled:opacity-40 disabled:cursor-not-allowed"
+          >
+            {solving && hintMode === "greedy" ? "Thinking…" : "⚡ Hint (Greedy)"}
           </button>
           <button
             onClick={reset}
             className="px-5 py-2.5 rounded-xl font-bold text-sm text-slate-200 bg-slate-700 hover:-translate-y-px active:translate-y-0 transition-transform"
           >
-            ↺ Reset
+            ↺ New Game
           </button>
         </div>
 
-        <p className="text-xs text-slate-600">Click tiles · or use W A S D / arrow keys</p>
+        <p className="text-xs text-slate-600">Click tiles · WASD · Arrow keys</p>
 
         {/* Win overlay */}
         {won && (
@@ -228,7 +334,7 @@ export default function PuzzleGame() {
               <span className="text-5xl font-black text-violet-300">{moves}</span>
               <p className="text-slate-400">move{moves !== 1 ? "s" : ""}{optimal !== null ? ` (optimal: ${optimal})` : ""}</p>
               <button onClick={reset} className="mt-2 px-5 py-2.5 rounded-xl font-bold text-sm text-slate-200 bg-slate-700 hover:-translate-y-px transition-transform">
-                Play Again
+                New Game
               </button>
             </div>
           </div>

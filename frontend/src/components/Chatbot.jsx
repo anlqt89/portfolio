@@ -21,6 +21,7 @@ const Chatbot = () => {
 
   const scrollRef = useRef(null);
 
+  
   useEffect(() => {
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;

@@ -8,10 +8,7 @@ from app.data.portfolio_data import PORTFOLIO_DATA
 
 client = OpenAI(api_key=OPENAI_API_KEY)
 
-
-# =========================================================
 # Text helpers
-# =========================================================
 def normalize_text(text: str) -> str:
     return re.sub(r"\s+", " ", text.lower().strip())
 
@@ -91,9 +88,7 @@ def truncate_projects(projects: List[Dict[str, Any]], limit: int = 5) -> List[Di
     return projects[:limit]
 
 
-# =========================================================
 # Project ranking / matching helpers
-# =========================================================
 def score_project(project: Dict[str, Any]) -> int:
     text = project_to_text(project)
 
@@ -170,9 +165,7 @@ def find_projects_by_technology(projects: List[Dict[str, Any]], question: str) -
     return unique
 
 
-# =========================================================
 # Intent routing
-# =========================================================
 def route_question(question: str) -> str:
     q = normalize_text(question)
 
@@ -253,9 +246,7 @@ def route_question(question: str) -> str:
     return "general"
 
 
-# =========================================================
 # Context builder
-# =========================================================
 def build_context(question: str) -> Tuple[str, Dict[str, Any]]:
     intent = route_question(question)
 
@@ -341,15 +332,8 @@ def build_context(question: str) -> Tuple[str, Dict[str, Any]]:
     return intent, PORTFOLIO_DATA
 
 
-# =========================================================
 # Prompt builder
-# =========================================================
 def build_system_prompt(intent: str, portfolio_context: str) -> str:
-    recruiter_mode_intents = {
-        "resume", "projects", "skills", "tech_stack", "experience",
-        "education", "projects_by_technology", "contact", "general"
-    }
-
     behavioral_mode_intents = {
         "behavioral_intro", "behavioral_best_project",
         "behavioral_story", "behavioral_fit"
@@ -357,43 +341,41 @@ def build_system_prompt(intent: str, portfolio_context: str) -> str:
 
     if intent in behavioral_mode_intents:
         return f"""
-You are An Lam, a software engineer, speaking directly in a job interview.
+        You are An Lam, a software engineer, speaking directly in a job interview.
 
-Speak naturally and confidently in first person — like a real person, not a chatbot.
-Keep answers to 2-3 short paragraphs. Be specific but conversational.
-Never mention "portfolio data" or that you’re an AI.
-Only use facts from the data below — don’t invent anything.
-If something isn’t in the data, be honest and keep it brief.
+        Speak naturally and confidently in first person — like a real person, not a chatbot.
+        Keep answers to 2-3 short paragraphs. Be specific but conversational.
+        Never mention "portfolio data" or that you’re an AI.
+        Only use facts from the data below — don’t invent anything.
+        If something isn’t in the data, be honest and keep it brief.
 
-For behavioral questions, naturally weave in a relevant experience:
-what the situation was, what you did, and what came out of it.
+        For behavioral questions, naturally weave in a relevant experience:
+        what the situation was, what you did, and what came out of it.
 
-For "tell me about yourself", give a natural intro: who you are, what you’ve built, what you’re looking for.
+        For "tell me about yourself", give a natural intro: who you are, what you’ve built, what you’re looking for.
 
-{portfolio_context}
-""".strip()
+        {portfolio_context}
+        """.strip()
 
     return f"""
-You are a friendly assistant helping recruiters learn about An Lam, a software engineer.
+        You are a friendly assistant helping recruiters learn about An Lam, a software engineer.
 
-Answer conversationally — warm, clear, and to the point. Not robotic.
-Only use the data below. Don’t invent skills, companies, or achievements.
-If something isn’t there, say "I don’t have that info" naturally.
-Keep responses concise. Use bullet points only for lists of 3+ items.
-Don’t reveal contact info unless directly asked.
+        Answer conversationally — warm, clear, and to the point. Not robotic.
+        Only use the data below. Don’t invent skills, companies, or achievements.
+        If something isn’t there, say "I don’t have that info" naturally.
+        Keep responses concise. Use bullet points only for lists of 3+ items.
+        Don’t reveal contact info unless directly asked.
 
-If asked about resume or to download resume, write 1 short sentence about An, then on separate lines:
-SWE Resume: <exact url from resume_download.swe>
-AI/ML Resume: <exact url from resume_download.ml>
-Plain text only, no markdown.
+        If asked about resume or to download resume, write 1 short sentence about An, then on separate lines:
+        SWE Resume: <exact url from resume_download.swe>
+        AI/ML Resume: <exact url from resume_download.ml>
+        Plain text only, no markdown.
 
-{portfolio_context}
-""".strip()
+        {portfolio_context}
+        """.strip()
 
 
-# =========================================================
 # Main function
-# =========================================================
 def ask_resume_bot(question: str) -> str:
     try:
         if not question or not question.strip():
@@ -421,9 +403,7 @@ def ask_resume_bot(question: str) -> str:
         return f"Error: {str(e)}"
 
 
-# =========================================================
 # Optional local testing
-# =========================================================
 if __name__ == "__main__":
     questions = [
         "Hi",
